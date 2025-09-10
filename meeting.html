@@ -293,14 +293,8 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
   const isValid = validMeetings.some(m => m.id === meetingID && m.pass === password);
 
   if (!isValid) {
-    // Show inline error instead of proceeding
-    const errorMsg = document.getElementById('error-msg');
-    if (errorMsg) {
-      errorMsg.textContent = "Invalid Meeting ID or Passcode. Please try again.";
-      errorMsg.style.color = "red";
-    } else {
-      alert("Invalid Meeting ID or Passcode. Please try again.");
-    }
+    // Show simple error message
+    alert("Invalid Meeting ID or Passcode. Please try again.");
     return;
   }
 
